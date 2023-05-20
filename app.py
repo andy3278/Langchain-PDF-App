@@ -11,6 +11,7 @@ def main ():
     st.header("Ask PDF")
 
     pdf = st.file_uploader("Upload your PDF here", type = ["pdf"])
+    
 
 
 if __name__ == '__main__':
