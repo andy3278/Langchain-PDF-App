@@ -4,6 +4,8 @@ from PyPDF2 import PdfReader
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.vectorstores import FAISS
+from langchain.chains.question_answering import load_qa_chain
+from langchain.llms import OpenAI
 
 def main ():
     # load env secret
@@ -25,7 +27,7 @@ def main ():
         splitter = CharacterTextSplitter(
             separator= "\n",
             chunk_size = 1000,
-            chunk_overlap  = 200,
+            chunk_overlap  = 0,
             length_function = len
         )
         chunks = splitter.split_text(text=text)
@@ -37,10 +39,16 @@ def main ():
         db = FAISS.from_texts(chunks, embedding=embeddings)
 
         question = st.text_input("input a question about the pdf: ")
-        if question is not None:
+        if question:
             # find top k relevant docs 
             docs = db.similarity_search(question, k = 4)
-            st.write(docs)
+            #st.write(docs)
+            llm = OpenAI(verbose=True)
+            chain = load_qa_chain(llm=llm, chain_type="stuff", verbose=True)
+            response = chain.run(input_documents = docs, question=question)
+
+            st.write(response)
+
 
 if __name__ == '__main__':
     main()
