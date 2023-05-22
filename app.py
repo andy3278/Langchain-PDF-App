@@ -15,6 +15,7 @@ def main ():
     st.header("Ask PDF")
     # upload pdf
     pdf = st.file_uploader("Upload your PDF here", type = ["pdf"])
+    
 
     # extract text from pdf
     if pdf is not None:
